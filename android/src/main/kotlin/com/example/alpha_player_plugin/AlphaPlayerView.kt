@@ -29,7 +29,7 @@ import java.io.File
  * Date: 2023/3/28
  */
 class AlphaPlayerView(context: Context, viewId: Int, private val messenger: BinaryMessenger) :
-        PlatformView, RelativeLayout(context), LifecycleOwner, MethodCallHandler {
+    PlatformView, RelativeLayout(context), LifecycleOwner, MethodCallHandler {
     private val TAG = "AlphaPlayerView"
 
 
@@ -45,8 +45,9 @@ class AlphaPlayerView(context: Context, viewId: Int, private val messenger: Bina
 
     private val playerAction = object : IPlayerAction {
         override fun onVideoSizeChanged(videoWidth: Int, videoHeight: Int, scaleType: ScaleType) {
-            Log.i(TAG,
-                    "call onVideoSizeChanged(), videoWidth = $videoWidth, videoHeight = $videoHeight, scaleType = $scaleType"
+            Log.i(
+                TAG,
+                "call onVideoSizeChanged(), videoWidth = $videoWidth, videoHeight = $videoHeight, scaleType = $scaleType"
             )
         }
 
@@ -65,16 +66,23 @@ class AlphaPlayerView(context: Context, viewId: Int, private val messenger: Bina
     }
 
     private val monitor = object : IMonitor {
-        override fun monitor(state: Boolean, playType: String, what: Int, extra: Int, errorInfo: String) {
-            Log.i(TAG,
-                    "call monitor(), state: $state, playType = $playType, what = $what, extra = $extra, errorInfo = $errorInfo"
+        override fun monitor(
+            state: Boolean,
+            playType: String,
+            what: Int,
+            extra: Int,
+            errorInfo: String,
+        ) {
+            Log.i(
+                TAG,
+                "call monitor(), state: $state, playType = $playType, what = $what, extra = $extra, errorInfo = $errorInfo"
             )
         }
     }
 
     init {
         val layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
+            FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
         )
         setLayoutParams(layoutParams)
         initPlayerController(context, this)
@@ -95,6 +103,7 @@ class AlphaPlayerView(context: Context, viewId: Int, private val messenger: Bina
                     file.parent?.let { startVideo(it, file.name, align, isLooping) }
                 }
             }
+
             "pause" -> mPlayerController?.pause()
             "resume" -> mPlayerController?.resume()
             else -> result.notImplemented()
@@ -111,7 +120,8 @@ class AlphaPlayerView(context: Context, viewId: Int, private val messenger: Bina
         detachView()
     }
 
-    override fun getLifecycle(): Lifecycle = mRegistry
+    override val lifecycle: Lifecycle
+        get() = mRegistry
 
     private fun initPlayerController(context: Context, owner: LifecycleOwner) {
         val configuration = Configuration(context, owner)
@@ -138,7 +148,7 @@ class AlphaPlayerView(context: Context, viewId: Int, private val messenger: Bina
         var isLooping = looping ?: true
 
         val dataSource = DataSource().setBaseDir(filePath).setPortraitPath(fileName, scaleType)
-                .setLandscapePath(fileName, scaleType).setLooping(isLooping)
+            .setLandscapePath(fileName, scaleType).setLooping(isLooping)
         if (dataSource.isValid()) {
             mPlayerController?.start(dataSource)
         }
